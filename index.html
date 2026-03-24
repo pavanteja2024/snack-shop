@@ -16,7 +16,6 @@ body {
   color: white;
 }
 
-/* HEADER */
 header {
   text-align: center;
   padding: 20px;
@@ -28,10 +27,8 @@ header {
 .tagline {
   text-align: center;
   color: black;
-  margin-bottom: 20px;
 }
 
-/* GRID */
 .container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -39,18 +36,16 @@ header {
   padding: 20px;
 }
 
-/* CARD */
 .card {
   background: rgba(0,0,0,0.85);
   border-radius: 15px;
   padding: 15px;
   text-align: center;
-  transition: 0.3s;
 }
 
-.card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 25px rgba(255,0,0,0.8);
+.combo {
+  border: 2px solid gold;
+  box-shadow: 0 0 20px gold;
 }
 
 .card img {
@@ -64,24 +59,34 @@ header {
   font-weight: bold;
 }
 
-/* BUTTON */
-button {
+.add-btn {
   margin-top: 10px;
   padding: 10px;
   width: 100%;
-  border: none;
   border-radius: 8px;
   background: #ff3333;
   color: white;
-  cursor: pointer;
-  font-weight: 600;
+  border: none;
 }
 
-button:hover {
-  background: #cc0000;
+.added {
+  background: #00c853 !important;
 }
 
-/* CART BAR */
+.qty {
+  display: none;
+  margin-top: 10px;
+  justify-content: center;
+  gap: 10px;
+}
+
+.qty button {
+  background: #00c853;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+}
+
 .cart-bar {
   position: fixed;
   bottom: 20px;
@@ -91,14 +96,41 @@ button:hover {
   padding: 15px 30px;
   border-radius: 50px;
   font-weight: bold;
-  color: white;
   cursor: pointer;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.4);
-  transition: 0.3s;
 }
 
-.cart-bar:hover {
-  background: #00b342;
+/* MODAL */
+.modal {
+  display: none;
+  position: fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background: rgba(0,0,0,0.8);
+  justify-content: center;
+  align-items: center;
+}
+
+.box {
+  background: #111;
+  padding: 20px;
+  border-radius: 15px;
+  width: 300px;
+}
+
+input, textarea {
+  width: 100%;
+  margin: 8px 0;
+  padding: 8px;
+  border-radius: 5px;
+  border: none;
+}
+
+button.submit {
+  width: 100%;
+  padding: 10px;
+  background: #00c853;
+  border: none;
+  color: white;
 }
 
 </style>
@@ -107,114 +139,173 @@ button:hover {
 <body>
 
 <header>🌙 Night Snack Shop</header>
-<p class="tagline">Select items and click Order Now 🛒</p>
+<p class="tagline">Order your favorite snacks</p>
 
-<div class="container">
+<div class="container" id="products"></div>
 
-  <div class="card">
-    <img src="oreo.png">
-    <h3>Oreo</h3>
-    <p class="price">₹13</p>
-    <button onclick="addToCart('Oreo')">Add</button>
-  </div>
-
-  <div class="card">
-    <img src="bourbon.png">
-    <h3>Bourbon</h3>
-    <p class="price">₹13</p>
-    <button onclick="addToCart('Bourbon')">Add</button>
-  </div>
-
-  <div class="card">
-    <img src="bingo.png">
-    <h3>Bingo</h3>
-    <p class="price">₹13</p>
-    <button onclick="addToCart('Bingo')">Add</button>
-  </div>
-
-  <div class="card">
-    <img src="chocopie.png">
-    <h3>Lotte Choco Pie</h3>
-    <p class="price">₹13</p>
-    <button onclick="addToCart('Choco Pie')">Add</button>
-  </div>
-
-  <div class="card">
-    <img src="moongdal.png">
-    <h3>Moong Dal</h3>
-    <p class="price">₹13</p>
-    <button onclick="addToCart('Moong Dal')">Add</button>
-  </div>
-
-  <div class="card">
-    <img src="kurkure.png">
-    <h3>Kurkure</h3>
-    <p class="price">₹13</p>
-    <button onclick="addToCart('Kurkure')">Add</button>
-  </div>
-
-  <div class="card">
-    <img src="aloo.png">
-    <h3>Aloo Bhujia</h3>
-    <p class="price">₹13</p>
-    <button onclick="addToCart('Aloo Bhujia')">Add</button>
-  </div>
-
-  <div class="card">
-    <img src="tedhe.png">
-    <h3>Tedhe Medhe</h3>
-    <p class="price">₹13</p>
-    <button onclick="addToCart('Tedhe Medhe')">Add</button>
-  </div>
-
+<div class="cart-bar" onclick="openForm()">
+🛒 <span id="count">0</span> items | Order Now
 </div>
 
-<!-- CART BAR -->
-<div class="cart-bar" onclick="orderAll()">
-  🛒 <span id="count">0</span> items | Order Now
+<!-- FORM -->
+<div class="modal" id="formModal">
+  <div class="box">
+    <h3>Enter Details</h3>
+    <input id="room" placeholder="Room Number">
+    <input id="block" placeholder="Block">
+    <textarea id="note" placeholder="Note"></textarea>
+    <button class="submit" onclick="showBill()">Next</button>
+  </div>
+</div>
+
+<!-- BILL -->
+<div class="modal" id="billModal">
+  <div class="box">
+    <h3>🧾 Bill</h3>
+    <div id="bill"></div>
+    <button class="submit" onclick="confirmOrder()">Confirm Order</button>
+  </div>
 </div>
 
 <script>
 
+let products = [
+  {name:"Oreo", price:13, img:"oreo.png"},
+  {name:"Bourbon", price:13, img:"bourbon.png"},
+  {name:"Bingo", price:13, img:"bingo.png"},
+  {name:"Choco Pie", price:13, img:"chocopie.png"},
+  {name:"Moong Dal", price:13, img:"moongdal.png"},
+  {name:"Kurkure", price:13, img:"kurkure.png"},
+  {name:"Aloo Bhujia", price:13, img:"aloo.png"},
+  {name:"Tedhe Medhe", price:13, img:"tedhe.png"},
+  {name:"Maggi", price:15, img:"maggi.png"},
+  {name:"Jim Jam", price:13, img:"jimjam.png"},
+  {name:"Swiss Roll", price:13, img:"swiss.png"},
+  {name:"Tiger Biscuit", price:13, img:"tiger.png"},
+
+  {name:"Mini Combo", price:120, img:"combo1.png", combo:true},
+  {name:"Mega Combo + Free Oreo", price:200, img:"combo2.png", combo:true}
+];
+
 let cart = {};
 
-function addToCart(item) {
-  if(cart[item]) {
-    cart[item]++;
+let container = document.getElementById("products");
+
+products.forEach((p,i)=>{
+  container.innerHTML += `
+  <div class="card ${p.combo ? 'combo':''}">
+    <img src="${p.img}">
+    <h3>${p.name}</h3>
+    ${p.combo ? '<p style="color:yellow;">Combo Offer</p>' : ''}
+    <p class="price">₹${p.price}</p>
+
+    <button class="add-btn" id="btn${i}" onclick="add(${i})">Add</button>
+
+    <div class="qty" id="qty${i}">
+      <button onclick="minus(${i})">-</button>
+      <span id="c${i}">1</span>
+      <button onclick="plus(${i})">+</button>
+    </div>
+  </div>`;
+});
+
+function add(i){
+  let n = products[i].name;
+  cart[n]=1;
+
+  btn(i,true);
+  document.getElementById("qty"+i).style.display="flex";
+  update();
+}
+
+function plus(i){
+  let n = products[i].name;
+  cart[n]++;
+  document.getElementById("c"+i).innerText=cart[n];
+  update();
+}
+
+function minus(i){
+  let n = products[i].name;
+  cart[n]--;
+
+  if(cart[n]<=0){
+    delete cart[n];
+    btn(i,false);
+    document.getElementById("qty"+i).style.display="none";
   } else {
-    cart[item] = 1;
+    document.getElementById("c"+i).innerText=cart[n];
   }
 
-  updateCartCount();
+  update();
 }
 
-function updateCartCount() {
-  let total = 0;
-
-  for(let item in cart) {
-    total += cart[item];
-  }
-
-  document.getElementById("count").innerText = total;
+function btn(i,state){
+  let b=document.getElementById("btn"+i);
+  b.classList.toggle("added",state);
+  b.innerText=state?"Added":"Add";
 }
 
-function orderAll() {
-  if(Object.keys(cart).length === 0){
-    alert("Cart is empty!");
+function update(){
+  let t=0;
+  for(let i in cart) t+=cart[i];
+  document.getElementById("count").innerText=t;
+}
+
+function openForm(){
+  if(Object.keys(cart).length===0){
+    alert("Cart empty!");
     return;
   }
+  document.getElementById("formModal").style.display="flex";
+}
 
-  let phone = "919848469818";
-  let message = "Hi Pavan, I want to order:\n";
+function showBill(){
+  let total=0;
+  let html="";
 
-  let i = 1;
   for(let item in cart){
-    message += i + ". " + item + " x" + cart[item] + "\n";
-    i++;
+    let qty=cart[item];
+    let price=products.find(p=>p.name===item).price;
+    let sub=price*qty;
+    total+=sub;
+
+    html+=`${item} x${qty} = ₹${sub}<br>`;
   }
 
-  let url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
-  window.open(url, '_blank');
+  let delivery = total>=100?0:10;
+  let final=total+delivery;
+
+  html+=`<hr>
+  Subtotal: ₹${total}<br>
+  Delivery: ₹${delivery}<br>
+  <b>Total: ₹${final}</b>`;
+
+  window.details={
+    room:room.value,
+    block:block.value,
+    note:note.value,
+    total:final
+  };
+
+  document.getElementById("bill").innerHTML=html;
+  document.getElementById("formModal").style.display="none";
+  document.getElementById("billModal").style.display="flex";
+}
+
+function confirmOrder(){
+  let msg="Hi Pavan, Order:\n";
+
+  for(let i in cart){
+    msg+=i+" x"+cart[i]+"\n";
+  }
+
+  msg+=`\nRoom:${details.room}
+Block:${details.block}
+Note:${details.note}
+Total: ₹${details.total}`;
+
+  window.open("https://wa.me/919848469818?text="+encodeURIComponent(msg));
 }
 
 </script>
